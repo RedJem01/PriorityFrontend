@@ -1,0 +1,17 @@
+<!DOCTYPE html>
+<html>
+   <body>
+      <form method = "post">
+         Title: <input name="title"/>
+          <br/><br/>
+          Description: <input name="description"/>
+          <br/><br/>
+          <select name="priority" method="GET" action="/">
+              {% for priority in priorities %}
+              <option value= "{{priority}}" SELECTED>{{priority}}</option>"
+              {% endfor %}
+          </select>
+          <button type="submit">Submit</button>
+      </form>
+   </body>
+</html>
