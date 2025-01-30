@@ -1,17 +1,100 @@
 <!DOCTYPE html>
 <html>
+    <head>
+        <style>
+            body {
+              /* Center the form on the page */
+              text-align: center;
+            }
+
+            form {
+              display: inline-block;
+              /* Form outline */
+              padding: 1em;
+              border: 1px solid #ccc;
+              border-radius: 1em;
+            }
+
+            p + p {
+              margin-top: 1em;
+            }
+
+            label {
+              /* Uniform size & alignment */
+              display: inline-block;
+              min-width: 90px;
+              text-align: right;
+            }
+
+            input,
+            textarea {
+              /* To make sure that all text fields have the same font settings
+                 By default, text areas have a monospace font */
+              font: 1em sans-serif;
+              /* Uniform text field size */
+              width: 300px;
+              box-sizing: border-box;
+              /* Match form field borders */
+              border: 1px solid #999;
+            }
+
+            input:focus,
+            textarea:focus {
+              /* Set the outline width and style */
+              outline-style: solid;
+              /* To give a little highlight on active elements */
+              outline-color: #000;
+            }
+
+            textarea {
+              /* Align multiline text fields with their labels */
+              vertical-align: top;
+              /* Provide space to type some text */
+              height: 5em;
+            }
+
+            .button {
+              /* Align buttons with the text fields */
+              padding-left: 90px; /* same size as the label elements */
+            }
+
+            button {
+              /* This extra margin represent roughly the same space as the space
+                 between the labels and their text fields */
+              margin-left: 0.5em;
+            }
+        </style>
+    </head>
    <body>
-      <form method = "post">
-         Title: <input name="title"/>
-          <br/><br/>
-          Description: <input name="description"/>
-          <br/><br/>
-          <select name="priority" method="GET" action="/">
-              {% for priority in priorities %}
-              <option value= "{{priority}}" SELECTED>{{priority}}</option>"
-              {% endfor %}
-          </select>
-          <button type="submit">Submit</button>
-      </form>
+        {% with messages = get_flashed_messages()%}
+            {% if messages%}
+                {% for message in messages%}
+                    <h2>{{message}}</h2>
+                {%endfor%}
+            {%endif%}
+        {%endwith%}
+       <div class="form-box">
+           <h2>Input alert details:</h2>
+          <form method = "post">
+              <p>
+                  <label>Title</label>
+                  <input name="title"/>
+              </p>
+              <p>
+                  <label>Description</label>
+                  <input name="description"/>
+              </p>
+              <p>
+                  <select name="priority" method="GET" action="/">
+                      {% for priority in priorities %}
+                      <option value= "{{priority}}" SELECTED>{{priority}}</option>"
+                      {% endfor %}
+                  </select>
+              </p>
+              <p class="button">
+                  <button type="submit">Submit</button>
+              </p>
+          </form>
+       </div>
    </body>
 </html>
