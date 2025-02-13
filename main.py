@@ -19,6 +19,7 @@ app = Flask(__name__)
 app.secret_key = 'the random string'
 
 logger = logging.getLogger(__name__)
+logging.basicConfig(level=logging.INFO)
 
 #Make SQS client
 sqs = boto3.client(
