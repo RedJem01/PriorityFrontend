@@ -1,4 +1,4 @@
-FROM python:latest
+FROM python:3.12-slim
 WORKDIR /PriorityFrontend
 COPY . /PriorityFrontend
 RUN pip3 install -r requirements.txt

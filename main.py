@@ -78,8 +78,8 @@ def priority_form():
 
     return render_template("priority.html", priorities=priorities)
 
-#Helth check for api
-@app.route('/health', methods=['GET'])
+#Health check for api
+@app.route('/', methods=['GET'])
 def health_check():
     return 'OK', 200
 
