@@ -1,10 +1,10 @@
 import json
-import logging
 import os
 
 import boto3
 from flask import Flask, render_template, flash, request, redirect, url_for
 from dotenv import load_dotenv
+from loguru import logger
 
 # loading variables from .env file
 load_dotenv()
@@ -18,9 +18,6 @@ P3_QUEUE = os.getenv('P3_QUEUE')
 app = Flask(__name__)
 app.secret_key = 'the random string'
 
-logger = logging.getLogger(__name__)
-logging.basicConfig(level=logging.INFO)
-
 #Make SQS client
 sqs = boto3.client(
     'sqs',
@@ -31,49 +28,52 @@ sqs = boto3.client(
 
 @app.route('/form', methods=["GET", "POST"])
 def priority_form():
-    #For drop down menu
-    priorities = ['Low', 'Medium', 'High']
-    if request.method == "POST":
+    try:
+        #For drop down menu
+        priorities = ['Low', 'Medium', 'High']
+        if request.method == "POST":
 
-        #Get inputs
-        title = request.form["title"]
-        description = request.form["description"]
-        #Get priority number
-        priority = request.form["priority"]
+            #Get inputs
+            title = request.form["title"]
+            description = request.form["description"]
+            #Get priority number
+            priority = request.form["priority"]
 
-        #Check title and description were entered
-        if not title:
-            flash('Title is required!')
-            logger.warning("Title not on POST request")
-            return redirect(url_for('priority_form'))
-        elif not description:
-            flash('Description is required!')
-            logger.warning("Title not on POST request")
-            return redirect(url_for('priority_form'))
+            #Check title and description were entered
+            if not title:
+                flash('Title is required!')
+                logger.warning("Title not on POST request")
+                return redirect(url_for('priority_form'))
+            elif not description:
+                flash('Description is required!')
+                logger.warning("Title not on POST request")
+                return redirect(url_for('priority_form'))
 
-        else:
-            #Make SQS message body
-            priority_message = json.dumps({'title': title, 'description': description})
-            #Send message to each separate priority queue
-            if priority == "High":
-                logger.info("SQS message sent to priority queue 1 with message" + priority_message)
-                response = sqs.send_message(
-                    QueueUrl=P1_QUEUE,
-                    MessageBody=priority_message
-                )
-            elif priority == "Medium":
-                logger.info("SQS message sent to priority queue 2 with message" + priority_message)
-                response = sqs.send_message(
-                    QueueUrl=P2_QUEUE,
-                    MessageBody=priority_message
-                )
             else:
-                logger.info("SQS message sent to priority queue 3 with message" + priority_message)
-                response = sqs.send_message(
-                    QueueUrl=P3_QUEUE,
-                    MessageBody=priority_message
-                )
-            return redirect(url_for('priority_form'))
+                #Make SQS message body
+                priority_message = json.dumps({'title': title, 'description': description})
+                #Send message to each separate priority queue
+                if priority == "High":
+                    logger.info(f"SQS message sent to priority queue 1 with message: {priority_message}")
+                    response = sqs.send_message(
+                        QueueUrl=P1_QUEUE,
+                        MessageBody=priority_message
+                    )
+                elif priority == "Medium":
+                    logger.info(f"SQS message sent to priority queue 2 with message: {priority_message}")
+                    response = sqs.send_message(
+                        QueueUrl=P2_QUEUE,
+                        MessageBody=priority_message
+                    )
+                else:
+                    logger.info(f"SQS message sent to priority queue 3 with message: {priority_message}")
+                    response = sqs.send_message(
+                        QueueUrl=P3_QUEUE,
+                        MessageBody=priority_message
+                    )
+                return redirect(url_for('priority_form'))
+    except Exception as e:
+        logger.error(f"An error occurred: {e}")
 
 
     return render_template("priority.html", priorities=priorities)
