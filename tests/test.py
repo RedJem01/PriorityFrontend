@@ -3,7 +3,15 @@ import json
 import main
 from main import app
 
+def set_environment_variables():
+    main.P1_QUEUE = ''
+    main.P2_QUEUE = ''
+    main.P3_QUEUE = ''
+    main.AWS_REGION = 'eu-west-2'
+    main.ACCESS_KEY = 'testing'
+    main.SECRET_ACCESS_KEY = 'testing'
 def test_priority_form_queue_1(sqs_client):
+    set_environment_variables()
     queue1 = sqs_client.create_queue(QueueName='queue1')
 
     queue_url1 = queue1['QueueUrl']
@@ -24,6 +32,7 @@ def test_priority_form_queue_1(sqs_client):
     assert json.loads(message['Body']) == expected_msg
 
 def test_priority_form_queue_2(sqs_client):
+    set_environment_variables()
     queue2 = sqs_client.create_queue(QueueName='queue2')
 
     queue_url2 = queue2['QueueUrl']
@@ -44,6 +53,7 @@ def test_priority_form_queue_2(sqs_client):
     assert json.loads(message['Body']) == expected_msg
 
 def test_priority_form_queue_3(sqs_client):
+    set_environment_variables()
     queue3 = sqs_client.create_queue(QueueName='queue3')
 
     queue_url3 = queue3['QueueUrl']
