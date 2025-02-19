@@ -18,21 +18,20 @@ P3_QUEUE = os.getenv('P3_QUEUE')
 app = Flask(__name__)
 app.secret_key = 'the random string'
 
-#Make SQS client
-sqs = boto3.client(
-    'sqs',
-    region_name=AWS_REGION,
-    aws_access_key_id=ACCESS_KEY,
-    aws_secret_access_key=SECRET_ACCESS_KEY
-)
-
 @app.route('/form', methods=["GET", "POST"])
 def priority_form():
+    print(AWS_REGION)
     try:
+        # Make SQS client
+        sqs = boto3.client(
+            'sqs',
+            region_name=AWS_REGION,
+            aws_access_key_id=ACCESS_KEY,
+            aws_secret_access_key=SECRET_ACCESS_KEY
+        )
         #For drop down menu
         priorities = ['Low', 'Medium', 'High']
         if request.method == "POST":
-
             #Get inputs
             title = request.form["title"]
             description = request.form["description"]

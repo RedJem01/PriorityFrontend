@@ -10,6 +10,7 @@ def set_environment_variables():
     main.AWS_REGION = 'eu-west-2'
     main.ACCESS_KEY = 'testing'
     main.SECRET_ACCESS_KEY = 'testing'
+
 def test_priority_form_queue_1(sqs_client):
     set_environment_variables()
     queue1 = sqs_client.create_queue(QueueName='queue1')
