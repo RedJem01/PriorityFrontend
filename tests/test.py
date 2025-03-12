@@ -76,5 +76,5 @@ def test_priority_form_queue_3(sqs_client):
 
 def test_health_endpoint():
     client = app.test_client()
-    response = client.get("/")
+    response = client.get("/health")
     assert response.status_code == 200
