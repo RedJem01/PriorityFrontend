@@ -18,7 +18,7 @@ P3_QUEUE = os.getenv('P3_QUEUE')
 app = Flask(__name__)
 app.secret_key = 'the random string'
 
-@app.route('/form', methods=["GET", "POST"])
+@app.route('/', methods=["GET", "POST"])
 def priority_form():
     print(AWS_REGION)
     try:
@@ -78,11 +78,9 @@ def priority_form():
     return render_template("priority.html", priorities=priorities)
 
 #Health check for api
-@app.route('/', methods=['GET'])
+@app.route('/health', methods=['GET'])
 def health_check():
     return 'OK', 200
 
 if __name__ == '__main__':
     app.run()
-
-
