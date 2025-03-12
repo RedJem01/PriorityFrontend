@@ -21,7 +21,7 @@ def test_priority_form_queue_1(sqs_client):
     main.P1_QUEUE = queue_url1
 
     client = app.test_client()
-    client.post("/form", data={
+    client.post("/", data={
         "title": "Bug",
         "description": "Happening right now",
         "priority": "High"
@@ -42,7 +42,7 @@ def test_priority_form_queue_2(sqs_client):
     main.P2_QUEUE = queue_url2
 
     client = app.test_client()
-    client.post("/form", data={
+    client.post("/", data={
         "title": "Bug",
         "description": "Happening right now",
         "priority": "Medium"
@@ -63,7 +63,7 @@ def test_priority_form_queue_3(sqs_client):
     main.P3_QUEUE = queue_url3
 
     client = app.test_client()
-    client.post("/form", data={
+    client.post("/", data={
         "title": "Bug",
         "description": "Happening right now",
         "priority": "Low"
