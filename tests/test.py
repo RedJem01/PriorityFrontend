@@ -35,7 +35,7 @@ def test_priority_form_queue_1(bedrock_suggestion_mock, sqs_client):
         "priority": "High"
     })
 
-    expected_msg = {'description': 'Happening right now\nSuggested fix:Bedrock response','title': 'Bug'}
+    expected_msg = {'description': 'Happening right now\n\n Suggested fix: \n\nBedrock response','title': 'Bug'}
     sqs_messages = sqs_client.receive_message(QueueUrl=queue_url1)
     message = sqs_messages.get('Messages')[0]
     assert json.loads(message['Body']) == expected_msg
@@ -59,7 +59,7 @@ def test_priority_form_queue_2(bedrock_suggestion_mock, sqs_client):
         "priority": "Medium"
     })
 
-    expected_msg = {'description': 'Happening right now\nSuggested fix:Bedrock response','title': 'Bug'}
+    expected_msg = {'description': 'Happening right now\n\n Suggested fix: \n\nBedrock response','title': 'Bug'}
     sqs_messages = sqs_client.receive_message(QueueUrl=queue_url2)
     message = sqs_messages.get('Messages')[0]
     assert json.loads(message['Body']) == expected_msg
@@ -83,7 +83,7 @@ def test_priority_form_queue_3(bedrock_suggestion_mock, sqs_client):
         "priority": "Low"
     })
 
-    expected_msg = {'description': 'Happening right now\nSuggested fix:Bedrock response','title': 'Bug'}
+    expected_msg = {'description': 'Happening right now\n\n Suggested fix: \n\nBedrock response','title': 'Bug'}
     sqs_messages = sqs_client.receive_message(QueueUrl=queue_url3)
     message = sqs_messages.get('Messages')[0]
     assert json.loads(message['Body']) == expected_msg
