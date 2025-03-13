@@ -20,7 +20,8 @@ app.secret_key = 'the random string'
 
 @app.route('/', methods=["GET", "POST"])
 def priority_form():
-    print(AWS_REGION)
+    # For drop down menu
+    priorities = ['Low', 'Medium', 'High']
     try:
         # Make SQS client
         sqs = boto3.client(
@@ -29,9 +30,9 @@ def priority_form():
             aws_access_key_id=ACCESS_KEY,
             aws_secret_access_key=SECRET_ACCESS_KEY
         )
-        #For drop down menu
-        priorities = ['Low', 'Medium', 'High']
+
         if request.method == "POST":
+
             #Get inputs
             title = request.form["title"]
             description = request.form["description"]
@@ -43,12 +44,15 @@ def priority_form():
                 flash('Title is required!')
                 logger.warning("Title not on POST request")
                 return redirect(url_for('priority_form'))
+
             elif not description:
                 flash('Description is required!')
                 logger.warning("Title not on POST request")
                 return redirect(url_for('priority_form'))
 
             else:
+                response_text = bedrock_suggestion(title, description)
+                description += "\n" + "Suggested fix:" + response_text
                 #Make SQS message body
                 priority_message = json.dumps({'title': title, 'description': description})
                 #Send message to each separate priority queue
@@ -76,6 +80,26 @@ def priority_form():
 
 
     return render_template("priority.html", priorities=priorities)
+
+def bedrock_suggestion(title, description):
+    bedrock = boto3.client(
+        service_name="bedrock-runtime",
+        region_name=AWS_REGION
+    )
+    model_id = "amazon.titan-text-lite-v1"
+    user_message = f"Provide a suggestion for fixing a bug that has a title of: {title} and has a description of: {description}"
+    conversation = [
+        {
+            "role": "user",
+            "content": [{"text": user_message}],
+        }
+    ]
+    bedrock_response = bedrock.converse(
+        modelId=model_id,
+        messages=conversation,
+        inferenceConfig={"maxTokens": 512, "temperature": 0.5, "topP": 0.9},
+    )
+    return bedrock_response["output"]["message"]["content"][0]["text"]
 
 #Health check for api
 @app.route('/health', methods=['GET'])
