@@ -52,7 +52,7 @@ def priority_form():
 
             else:
                 response_text = bedrock_suggestion(title, description)
-                description += "\n" + "Suggested fix:" + response_text
+                description += "\n\n" + "Suggested fix: \n\n" + response_text
                 #Make SQS message body
                 priority_message = json.dumps({'title': title, 'description': description})
                 #Send message to each separate priority queue
