@@ -52,7 +52,7 @@ def priority_form():
 
             else:
                 response_text = bedrock_suggestion(title, description)
-                description += "\n\n" + "Suggested fix: \n\n" + response_text
+                description += "\n\n Suggested fix: \n\n" + response_text
                 #Make SQS message body
                 priority_message = json.dumps({'title': title, 'description': description})
                 #Send message to each separate priority queue
@@ -86,8 +86,8 @@ def bedrock_suggestion(title, description):
         service_name="bedrock-runtime",
         region_name=AWS_REGION
     )
-    model_id = "amazon.titan-text-lite-v1"
-    user_message = f"Provide a suggestion for fixing a bug that has a title of: {title} and has a description of: {description}"
+    model_id = "amazon.titan-text-express-v1"
+    user_message = f"Provide a suggestion for fixing this bug without asking for more information: {title} and has a description of: {description}"
     conversation = [
         {
             "role": "user",
